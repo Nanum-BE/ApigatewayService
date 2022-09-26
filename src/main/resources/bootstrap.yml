@@ -1,0 +1,10 @@
+
+# config server
+spring:
+  cloud:
+    config:
+      uri: http://127.0.0.1:8888
+      #      yml 파일 명
+      name: user-service
+#  profiles:
+#    active: dev
