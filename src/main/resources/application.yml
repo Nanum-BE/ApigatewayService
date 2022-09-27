@@ -67,7 +67,7 @@ spring:
 #          predicates:
 #            - Path=/catalog-service/**
         - id: house-service
-          uri: lb://HOUSE-SERVICE
+          uri: http://10.10.10.183:9001
           predicates:
             - Path=/house-service/**
           filters:
