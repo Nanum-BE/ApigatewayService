@@ -4,10 +4,13 @@ server:
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:8761/eureka
+      defaultZone: http://20.214.170.222:8761/eureka
     register-with-eureka: true
     fetch-registry: true
+
 spring:
+  main:
+    web-application-type: reactive
   application:
     name: apigateway-service
     # property ? ????
@@ -15,7 +18,7 @@ spring:
     port: 5672
     username: guest
     password: guest
-    host: 127.0.0.1
+    host: 20.214.170.222
   cloud:
     gateway:
       default-filters:
@@ -25,26 +28,32 @@ spring:
             preLogger: true
             postLogger: true
       routes:
-#        - id: user-service
-#          uri: lb://USER-SERVICE
-#          predicates:
-#            - Path=/user-service/**
-#        - id: user-service
-#          uri: lb://USER-SERVICE
-#          predicates:
-#            - Path=/user-service/login
-#            - Method=Post
-#          filters:
-#            - RemoveRequestHeader=Cookie
-#            - RewritePath=/user-service/(?<segment>.*), /$\{segment}
-#        - id: user-service
-#          uri: lb://USER-SERVICE
-#          predicates:
-#            - Path=/user-service/users
-#            - Method=Post
-#          filters:
-#            - RemoveRequestHeader=Cookie
-#            - RewritePath=/user-service/(?<segment>.*), /$\{segment}
+        - id: user-service
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/user-service/login
+            - Method= POST
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/user-service/(?<segment>.*), /$\{segment}
+
+        - id: user-service
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/user-service/api/sms/**
+            - Method= POST
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/user-service/(?<segment>.*), /$\{segment}
+
+        - id: user-service
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/user-service/api/signup
+            - Method=POST
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/user-service/(?<segment>.*), /$\{segment}
 #        - id: user-service
 #          uri: lb://USER-SERVICE
 #          predicates:
@@ -53,21 +62,22 @@ spring:
 #          filters:
 #            - RemoveRequestHeader=Cookie
 #            - RewritePath=/user-service/(?<segment>.*), /$\{segment}
-#        - id: user-service
-#          uri: lb://USER-SERVICE
-#          predicates:
-#            - Path=/user-service/**
-#            - Method=GET
-#          filters:
-#            - RemoveRequestHeader=Cookie
-#            - RewritePath=/user-service/(?<segment>.*), /$\{segment}
-#            - AuthorizationHeaderFilter
+        - id: user-service
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/user-service/api/**
+            - Method=GET
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/user-service/(?<segment>.*), /$\{segment}
+            - AuthorizationHeaderFilter
+
 #        - id: catalog-service
 #          uri: lb://CATALOG-SERVICE
 #          predicates:
 #            - Path=/catalog-service/**
         - id: house-service
-          uri: http://10.10.10.183:9001
+          uri: lb://HOUSE-SERVICE
           predicates:
             - Path=/house-service/**
           filters:
@@ -109,6 +119,3 @@ management:
     web:
       exposure:
         include: refresh, health, beans,info, httptrace, busrefresh, metrics, prometheus
-#token:
-#  #  60 * 60 * 24 * 1000
-#  secret: user_token

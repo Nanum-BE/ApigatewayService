@@ -1,4 +1,4 @@
-package com.example.apigatewayservice;
+package com.nanum.apigatewayservice;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

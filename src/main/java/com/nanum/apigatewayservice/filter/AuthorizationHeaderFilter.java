@@ -1,9 +1,6 @@
-package com.example.apigatewayservice.filter;
+package com.nanum.apigatewayservice.filter;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.impl.JWTParser;
-import com.auth0.jwt.interfaces.DecodedJWT;
+import io.jsonwebtoken.Jwts;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpHeaders;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
@@ -16,10 +13,12 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
+import java.util.Date;
+
 @Component
 @Slf4j
 public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<AuthorizationHeaderFilter.Config> {
-Environment env;
+    Environment env;
 
     public AuthorizationHeaderFilter(Environment env) {
         super(Config.class);
@@ -27,41 +26,48 @@ Environment env;
     }
 
     // login -> token -> users (with token) -> header(include token)
-    public static class Config{
-
-
+    public static class Config {
     }
+
     @Override
     public GatewayFilter apply(AuthorizationHeaderFilter.Config config) {
         return (exchange, chain) -> {
             ServerHttpRequest request = exchange.getRequest();
-          if(!request.getHeaders().containsKey(HttpHeaders.AUTHORIZATION)){
-              return onError(exchange, "No authorization header", HttpStatus.UNAUTHORIZED);
-          }
-          String authorizationHeader = request.getHeaders().get(HttpHeaders.AUTHORIZATION).get(0);
-          String jwt = authorizationHeader.replace("Bearer ", "");
-          if(!isJwtValid(jwt)){
-              return onError(exchange, "JWT token is not valid", HttpStatus.UNAUTHORIZED);
-          }
-        return chain.filter(exchange);
+
+            if (!request.getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
+                return onError(exchange, "No authorization header", HttpStatus.UNAUTHORIZED);
+            }
+            String authorizationHeader = request.getHeaders().get(HttpHeaders.AUTHORIZATION).get(0);
+            String jwt = authorizationHeader.replace("Bearer ", "");
+
+            if (!isJwtValid(jwt)) {
+                return onError(exchange, "JWT token is not valid", HttpStatus.UNAUTHORIZED);
+            }
+            return chain.filter(exchange);
         };
     }
 
+    //Jwt가 유효한지 검사
     private boolean isJwtValid(String jwt) {
         boolean returnValue = true;
 
         String subject = null;
-        try{
-
-            DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC512(env.getProperty("token.secret"))).build().verify(jwt);
-
-            subject = decodedJWT.getSubject();
-            decodedJWT.getExpiresAt();
-
-        }catch (Exception ex){
+        try {
+            subject = Jwts.parser()
+                    .setSigningKey(env.getProperty("token.secret"))
+                    .parseClaimsJws(jwt)
+                    .getBody()
+                    .getSubject();
+        } catch (Exception e) {
             returnValue = false;
         }
-        if(subject == null || subject.isEmpty()){
+        if (subject == null || subject.isEmpty()) {
+            returnValue = false;
+        }
+
+        log.info(env.getProperty("token.secret"));
+        if (Jwts.parser().setSigningKey(env.getProperty("token.secret"))
+                .parseClaimsJws(jwt).getBody().getExpiration().before(new Date())) {
             returnValue = false;
         }
         return returnValue;
