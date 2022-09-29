@@ -25,7 +25,6 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
         this.env = env;
     }
 
-    // login -> token -> users (with token) -> header(include token)
     public static class Config {
     }
 

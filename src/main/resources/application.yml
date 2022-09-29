@@ -1,14 +1,9 @@
 server:
   port: 8000
 
-eureka:
-  client:
-    service-url:
-      defaultZone: http://20.214.170.222:8761/eureka
-    register-with-eureka: true
-    fetch-registry: true
-
 spring:
+  profiles:
+    include: prod
   main:
     web-application-type: reactive
   application:
@@ -49,19 +44,12 @@ spring:
         - id: user-service
           uri: lb://USER-SERVICE
           predicates:
-            - Path=/user-service/api/signup
-            - Method=POST
+            - Path=/user-service/api/signup/**
+            - Method=GET,POST
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/user-service/(?<segment>.*), /$\{segment}
-#        - id: user-service
-#          uri: lb://USER-SERVICE
-#          predicates:
-#            - Path=/user-service/actuator/**
-#            - Method=GET,POST
-#          filters:
-#            - RemoveRequestHeader=Cookie
-#            - RewritePath=/user-service/(?<segment>.*), /$\{segment}
+
         - id: user-service
           uri: lb://USER-SERVICE
           predicates:
@@ -71,6 +59,15 @@ spring:
             - RemoveRequestHeader=Cookie
             - RewritePath=/user-service/(?<segment>.*), /$\{segment}
             - AuthorizationHeaderFilter
+
+        - id: user-service
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/nonuser-service/api/**
+            - Method=GET
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/nonuser-service/(?<segment>.*), /$\{segment}
 
 #        - id: catalog-service
 #          uri: lb://CATALOG-SERVICE
