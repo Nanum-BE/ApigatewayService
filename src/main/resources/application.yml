@@ -3,7 +3,7 @@ server:
 
 spring:
   profiles:
-    include: prod
+    include: local
   main:
     web-application-type: reactive
   application:
@@ -44,7 +44,7 @@ spring:
         - id: user-service
           uri: lb://USER-SERVICE
           predicates:
-            - Path=/user-service/api/signup/**
+            - Path=/user-service/api/v1/signup/**
             - Method=GET,POST
           filters:
             - RemoveRequestHeader=Cookie
@@ -53,8 +53,17 @@ spring:
         - id: user-service
           uri: lb://USER-SERVICE
           predicates:
-            - Path=/user-service/api/**
+            - Path=/user-service/api/v1/check/**
             - Method=GET
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/user-service/(?<segment>.*), /$\{segment}
+
+        - id: user-service
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/user-service/api/**
+            - Method=GET, PUT
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/user-service/(?<segment>.*), /$\{segment}
