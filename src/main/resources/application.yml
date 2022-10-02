@@ -90,6 +90,13 @@ spring:
 #          uri: lb://CATALOG-SERVICE
 #          predicates:
 #            - Path=/catalog-service/**
+        - id: supplementary-service
+          uri: lb://SUPPLEMENTARY-SERVICE
+          predicates:
+            - Path=/supplementary-service/**
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/supplementary-service/(?<segment>.*), /$\{segment}
         - id: house-service
           uri: lb://HOUSE-SERVICE
           predicates:
