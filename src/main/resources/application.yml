@@ -17,6 +17,19 @@ spring:
   cloud:
     gateway:
       default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: "http://localhost:3000"
+            allow-credentials: true
+            #            allow-headers: "*"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
         - name: GlobalFilter
           args:
             baseMessage: Spring Cloud Gateway Global Filter
