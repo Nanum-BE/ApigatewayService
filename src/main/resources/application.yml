@@ -23,18 +23,17 @@ spring:
           '[/**]':
             allowedOrigins: "http://localhost:3000"
             allow-credentials: true
-            #            allow-headers: "*"
             allowedMethods:
               - GET
               - POST
               - PUT
               - DELETE
               - OPTIONS
-        - name: GlobalFilter
-          args:
-            baseMessage: Spring Cloud Gateway Global Filter
-            preLogger: true
-            postLogger: true
+#        - name: GlobalFilter
+#          args:
+#            baseMessage: Spring Cloud Gateway Global Filter
+#            preLogger: true
+#            postLogger: true
       routes:
         - id: user-service
           uri: lb://USER-SERVICE
