@@ -125,6 +125,13 @@ spring:
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/house-service/(?<segment>.*), /$\{segment}
+        - id: web-flux-service
+          uri: lb://WEB-FLUX-SERVICE
+          predicates:
+            - Path=/web-flux-service/**
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/web-flux-service/(?<segment>.*), /$\{segment}
 #        - id: order-service
 #          uri: lb://ORDER-SERVICE
 #          predicates:
