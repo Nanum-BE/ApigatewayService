@@ -137,7 +137,7 @@ spring:
           predicates:
             - Path=/bus/v3/api-docs/**
           filters:
-            - RewritePath=/v3/api-docs/(?<path>.*), /$\{path}/v3/api-docs
+            - RewritePath=/bus/v3/api-docs/(?<path>.*), /$\{path}/bus/v3/api-docs
 #        - id: order-service
 #          uri: lb://ORDER-SERVICE
 #          predicates:
