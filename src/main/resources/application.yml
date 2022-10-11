@@ -133,7 +133,7 @@ spring:
             - RemoveRequestHeader=Cookie
             - RewritePath=/web-flux-service/(?<segment>.*), /$\{segment}
         - id: openapi
-          uri: http://localhost:${server.port}
+          uri: http://20.214.170.222:${server.port}
           predicates:
             - Path=/bus/v3/api-docs/**
           filters:
