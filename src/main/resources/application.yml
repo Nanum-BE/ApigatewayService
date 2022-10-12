@@ -104,6 +104,73 @@ spring:
             - RemoveRequestHeader=Cookie
             - RewritePath=/nonuser-service/(?<segment>.*), /$\{segment}
 
+          #TODO 게시판 CRUD 관해서 관리자 권한으로 구분지어야 함
+        - id: board-service
+          uri: lb://BOARD-SERVICE
+          predicates:
+            - Path=/board-service/api/v1/categories/**
+            - Method=POST, PUT
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/board-service/(?<segment>.*), /$\{segment}
+
+        - id: board-service
+          uri: lb://BOARD-SERVICE
+          predicates:
+            - Path=/board-service/api/v1/categories/**
+            - Method=GET
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/board-service/(?<segment>.*), /$\{segment}
+
+        - id: board-service
+          uri: lb://BOARD-SERVICE
+          predicates:
+            - Path=/board-service/api/v1/posts/**
+            - Method=POST, PUT
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/board-service/(?<segment>.*), /$\{segment}
+            - AuthorizationHeaderFilter
+
+        - id: board-service
+          uri: lb://BOARD-SERVICE
+          predicates:
+            - Path=/board-service/api/v1/like/**
+            - Method=POST, PUT, DELETE
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/board-service/(?<segment>.*), /$\{segment}
+            - AuthorizationHeaderFilter
+
+        - id: board-service
+          uri: lb://BOARD-SERVICE
+          predicates:
+            - Path=/board-service/api/v1/posts/**
+            - Method=GET
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/board-service/(?<segment>.*), /$\{segment}
+
+        - id: board-service
+          uri: lb://BOARD-SERVICE
+          predicates:
+            - Path=/board-service/api/v1/board/reply/**
+            - Method=POST, PUT
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/board-service/(?<segment>.*), /$\{segment}
+            - AuthorizationHeaderFilter
+
+        - id: board-service
+          uri: lb://BOARD-SERVICE
+          predicates:
+            - Path=/board-service/api/v1/board/reply/**
+            - Method=GET
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/board-service/(?<segment>.*), /$\{segment}
+
         - id: supplementary-service
           uri: lb://SUPPLEMENTARY-SERVICE
           predicates:
@@ -140,6 +207,12 @@ spring:
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/web-flux-service/(?<segment>.*), /$\{segment}
+        - id: openapi
+          uri: http://20.214.170.222:${server.port}
+          predicates:
+            - Path=/bus/v3/api-docs/**
+          filters:
+            - RewritePath=/bus/v3/api-docs/(?<path>.*), /$\{path}/bus/v3/api-docs
 
 management:
   endpoints:
