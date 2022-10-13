@@ -186,12 +186,40 @@ spring:
           filters:
             - RewritePath=/openapi/${spring.application.name}, /openapi
 
+        - id: supplementary-service
+          uri: lb://SUPPLEMENTARY-SERVICE
+          predicates:
+            - Path=/openapi/supplementary-service
+          filters:
+            - RewritePath=/supplementary-service/openapi/supplementary-service, /openapi
+
+        - id: board-service
+          uri: lb://BOARD-SERVICE
+          predicates:
+            - Path=/openapi/board-service
+          filters:
+            - RewritePath=/board-service/openapi/board-service, /openapi
+
         - id: house-service
           uri: lb://HOUSE-SERVICE
           predicates:
             - Path=/openapi/house-service
           filters:
             - RewritePath=/house-service/openapi/house-service, /openapi
+
+        - id: web-flux-service
+          uri: lb://WEB-FLUX-SERVICE
+          predicates:
+            - Path=/openapi/web-flux-service
+          filters:
+            - RewritePath=/web-flux-service/openapi/web-flux-service, /openapi
+
+        - id: user-service
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/openapi/user-service
+          filters:
+            - RewritePath=/user-service/openapi/user-service, /openapi
 
         - id: house-service
           uri: lb://HOUSE-SERVICE
@@ -207,12 +235,6 @@ spring:
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/web-flux-service/(?<segment>.*), /$\{segment}
-        - id: openapi
-          uri: http://20.214.170.222:${server.port}
-          predicates:
-            - Path=/bus/v3/api-docs/**
-          filters:
-            - RewritePath=/bus/v3/api-docs/(?<path>.*), /$\{path}/bus/v3/api-docs
 
 management:
   endpoints:
