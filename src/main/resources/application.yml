@@ -151,6 +151,7 @@ spring:
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/board-service/(?<segment>.*), /$\{segment}
+            - AuthorizationHeaderFilter
 
         - id: board-service
           uri: lb://BOARD-SERVICE
