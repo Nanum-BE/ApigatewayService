@@ -207,6 +207,13 @@ spring:
           filters:
             - RewritePath=/house-service/openapi/house-service, /openapi
 
+        - id: enroll-service
+          uri: lb://ENROLL-SERVICE
+          predicates:
+            - Path=/openapi/enroll-service
+          filters:
+            - RewritePath=/enroll-service/openapi/enroll-service, /openapi
+
         - id: web-flux-service
           uri: lb://WEB-FLUX-SERVICE
           predicates:
@@ -227,6 +234,13 @@ spring:
             - Path=/house-service/**
           filters:
             - RewritePath=/house-service/(?<path>.*), /$\{path}
+
+        - id: enroll-service
+          uri: lb://ENROLL-SERVICE
+          predicates:
+            - Path=/enroll-service/**
+          filters:
+            - RewritePath=/enroll-service/(?<path>.*), /$\{path}
 
         - id: web-flux-service
           uri: lb://WEB-FLUX-SERVICE
