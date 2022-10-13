@@ -127,7 +127,7 @@ spring:
           uri: lb://BOARD-SERVICE
           predicates:
             - Path=/board-service/api/v1/posts/**
-            - Method=POST, PUT
+            - Method=POST, PUT, DELETE
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/board-service/(?<segment>.*), /$\{segment}
@@ -151,13 +151,12 @@ spring:
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/board-service/(?<segment>.*), /$\{segment}
-            - AuthorizationHeaderFilter
 
         - id: board-service
           uri: lb://BOARD-SERVICE
           predicates:
             - Path=/board-service/api/v1/board/reply/**
-            - Method=POST, PUT
+            - Method=POST, PUT, DELETE
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/board-service/(?<segment>.*), /$\{segment}
