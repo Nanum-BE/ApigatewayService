@@ -240,7 +240,8 @@ spring:
           predicates:
             - Path=/enroll-service/**
           filters:
-            - RewritePath=/enroll-service/(?<path>.*), /$\{path}
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/enroll-service/(?<segment>.*), /$\{segment}
 
         - id: web-flux-service
           uri: lb://WEB-FLUX-SERVICE
@@ -262,35 +263,6 @@ spring:
             - Path=/bus/v3/api-docs/**
           filters:
             - RewritePath=/bus/v3/api-docs/(?<path>.*), /$\{path}/bus/v3/api-docs
-#        - id: order-service
-#          uri: lb://ORDER-SERVICE
-#          predicates:
-#            - Path=/order-service/actuator/**
-#            - Method=GET
-#          filters:
-#            - RemoveRequestHeader=Cookie
-#            - RewritePath=/order-service/(?<segment>.*), /$\{segment}
-#        - id: first-service
-#          uri: lb://MY-FIRST-SERVICE
-#          predicates:
-#            - Path=/first-service/**
-#          filters:
-##            - AddRequestHeader=first-request, first-request-header2
-##            - AddResponseHeader=first-response, first-response-header2
-#            - CustomFilter
-#        - id: second-service
-#          uri: lb://MY-SECOND-SERVICE
-#          predicates:
-#            - Path=/second-service/**
-#          filters:
-##            - AddRequestHeader=second-request, second-request-header2
-##            - AddResponseHeader=second-response, second-response-header2
-#            - name: CustomFilter
-#            - name: LoggingFilter
-#              args:
-#                baseMessage: Hi, Logging
-#                preLogger: true
-#                postLogger: true
 
 
 management:
