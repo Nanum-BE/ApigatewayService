@@ -1,14 +1,16 @@
 server:
   port: 8000
 
+springdoc.api-docs.path : /openapi
+
 spring:
   profiles:
     include: prod
   main:
+    allow-bean-definition-overriding: true
     web-application-type: reactive
   application:
     name: apigateway-service
-    # property ? ????
   rabbitmq:
     port: 5672
     username: guest
@@ -29,11 +31,6 @@ spring:
               - PUT
               - DELETE
               - OPTIONS
-#        - name: GlobalFilter
-#          args:
-#            baseMessage: Spring Cloud Gateway Global Filter
-#            preLogger: true
-#            postLogger: true
       routes:
         - id: user-service
           uri: lb://USER-SERVICE
@@ -107,10 +104,73 @@ spring:
             - RemoveRequestHeader=Cookie
             - RewritePath=/nonuser-service/(?<segment>.*), /$\{segment}
 
-#        - id: catalog-service
-#          uri: lb://CATALOG-SERVICE
-#          predicates:
-#            - Path=/catalog-service/**
+          #TODO 게시판 CRUD 관해서 관리자 권한으로 구분지어야 함
+        - id: board-service
+          uri: lb://BOARD-SERVICE
+          predicates:
+            - Path=/board-service/api/v1/categories/**
+            - Method=POST, PUT
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/board-service/(?<segment>.*), /$\{segment}
+
+        - id: board-service
+          uri: lb://BOARD-SERVICE
+          predicates:
+            - Path=/board-service/api/v1/categories/**
+            - Method=GET
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/board-service/(?<segment>.*), /$\{segment}
+
+        - id: board-service
+          uri: lb://BOARD-SERVICE
+          predicates:
+            - Path=/board-service/api/v1/posts/**
+            - Method=POST, PUT, DELETE
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/board-service/(?<segment>.*), /$\{segment}
+            - AuthorizationHeaderFilter
+
+        - id: board-service
+          uri: lb://BOARD-SERVICE
+          predicates:
+            - Path=/board-service/api/v1/like/**
+            - Method=POST, PUT, DELETE
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/board-service/(?<segment>.*), /$\{segment}
+            - AuthorizationHeaderFilter
+
+        - id: board-service
+          uri: lb://BOARD-SERVICE
+          predicates:
+            - Path=/board-service/api/v1/posts/**
+            - Method=GET
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/board-service/(?<segment>.*), /$\{segment}
+
+        - id: board-service
+          uri: lb://BOARD-SERVICE
+          predicates:
+            - Path=/board-service/api/v1/board/reply/**
+            - Method=POST, PUT, DELETE
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/board-service/(?<segment>.*), /$\{segment}
+            - AuthorizationHeaderFilter
+
+        - id: board-service
+          uri: lb://BOARD-SERVICE
+          predicates:
+            - Path=/board-service/api/v1/board/reply/**
+            - Method=GET
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/board-service/(?<segment>.*), /$\{segment}
+
         - id: supplementary-service
           uri: lb://SUPPLEMENTARY-SERVICE
           predicates:
@@ -118,13 +178,70 @@ spring:
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/supplementary-service/(?<segment>.*), /$\{segment}
+
+        - id: ${spring.application.name}
+          uri: lb://${spring.application.name}
+          predicates:
+            - Path=/openapi/${spring.application.name}
+          filters:
+            - RewritePath=/openapi/${spring.application.name}, /openapi
+
+        - id: supplementary-service
+          uri: lb://SUPPLEMENTARY-SERVICE
+          predicates:
+            - Path=/openapi/supplementary-service
+          filters:
+            - RewritePath=/supplementary-service/openapi/supplementary-service, /openapi
+
+        - id: board-service
+          uri: lb://BOARD-SERVICE
+          predicates:
+            - Path=/openapi/board-service
+          filters:
+            - RewritePath=/board-service/openapi/board-service, /openapi
+
+        - id: house-service
+          uri: lb://HOUSE-SERVICE
+          predicates:
+            - Path=/openapi/house-service
+          filters:
+            - RewritePath=/house-service/openapi/house-service, /openapi
+
+        - id: enroll-service
+          uri: lb://ENROLL-SERVICE
+          predicates:
+            - Path=/openapi/enroll-service
+          filters:
+            - RewritePath=/enroll-service/openapi/enroll-service, /openapi
+
+        - id: web-flux-service
+          uri: lb://WEB-FLUX-SERVICE
+          predicates:
+            - Path=/openapi/web-flux-service
+          filters:
+            - RewritePath=/web-flux-service/openapi/web-flux-service, /openapi
+
+        - id: user-service
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/openapi/user-service
+          filters:
+            - RewritePath=/user-service/openapi/user-service, /openapi
+
         - id: house-service
           uri: lb://HOUSE-SERVICE
           predicates:
             - Path=/house-service/**
           filters:
-            - RemoveRequestHeader=Cookie
-            - RewritePath=/house-service/(?<segment>.*), /$\{segment}
+            - RewritePath=/house-service/(?<path>.*), /$\{path}
+
+        - id: enroll-service
+          uri: lb://ENROLL-SERVICE
+          predicates:
+            - Path=/enroll-service/**
+          filters:
+            - RewritePath=/enroll-service/(?<path>.*), /$\{path}
+
         - id: web-flux-service
           uri: lb://WEB-FLUX-SERVICE
           predicates:
