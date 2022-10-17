@@ -132,6 +132,13 @@ spring:
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/web-flux-service/(?<segment>.*), /$\{segment}
+        - id: web-flux-service
+          uri: lb:ws://WEB-FLUX-SERVICE
+          predicates:
+            - Path=/web-flux-service/chat/**
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/web-flux-service/(?<segment>.*), /$\{segment}
         - id: openapi
           uri: http://20.214.170.222:${server.port}
           predicates:
