@@ -1,9 +1,5 @@
-# config server
 spring:
   cloud:
     config:
-      uri: http://20.214.170.222:8888
-      #      yml 파일 명
-      name: user-service
-#  profiles:
-#    active: dev
+      uri: http://3.37.166.100:8888
+      name: apigateway-service
