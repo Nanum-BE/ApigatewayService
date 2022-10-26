@@ -253,47 +253,7 @@ spring:
         - id: enroll-service
           uri: lb://ENROLL-SERVICE
           predicates:
-            - Path=/enroll-service/api/v1/tours/**
-            - Method=POST, PUT
-          filters:
-            - RemoveRequestHeader=Cookie
-            - RewritePath=/enroll-service/(?<segment>.*), /$\{segment}
-            - AuthorizationHeaderFilter
-
-        - id: enroll-service
-          uri: lb://ENROLL-SERVICE
-          predicates:
-            - Path=/enroll-service/api/v1/tours/houses/**
-            - Method=GET
-          filters:
-            - RemoveRequestHeader=Cookie
-            - RewritePath=/enroll-service/(?<segment>.*), /$\{segment}
-
-        - id: enroll-service
-          uri: lb://ENROLL-SERVICE
-          predicates:
-            - Path=/enroll-service/api/v1/tours/users/**
-            - Method=GET
-          filters:
-            - RemoveRequestHeader=Cookie
-            - RewritePath=/enroll-service/(?<segment>.*), /$\{segment}
-            - AuthorizationHeaderFilter
-
-        - id: enroll-service
-          uri: lb://ENROLL-SERVICE
-          predicates:
-            - Path=/enroll-service/api/v1/tours/hosts/**
-            - Method=GET
-          filters:
-            - RemoveRequestHeader=Cookie
-            - RewritePath=/enroll-service/(?<segment>.*), /$\{segment}
-            - AuthorizationHeaderFilter
-
-        - id: enroll-service
-          uri: lb://ENROLL-SERVICE
-          predicates:
-            - Path=/enroll-service/api/v1/move-in/**
-            - Method=POST, PUT
+            - Path=/enroll-service/**
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/enroll-service/(?<segment>.*), /$\{segment}
