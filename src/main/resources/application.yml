@@ -70,6 +70,13 @@ spring:
         - id: user-service
           uri: lb://USER-SERVICE
           predicates:
+            - Path=/login/**
+          filters:
+            - RemoveRequestHeader=Cookie
+
+        - id: user-service
+          uri: lb://USER-SERVICE
+          predicates:
             - Path=/oauth2/**
           filters:
             - RemoveRequestHeader=Cookie
