@@ -53,6 +53,28 @@ spring:
         - id: user-service
           uri: lb://USER-SERVICE
           predicates:
+            - Path=/user-service/login/oauth2
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/user-service/(?<segment>.*), /$\{segment}
+
+        - id: user-service
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/login/oauth2
+          filters:
+            - RemoveRequestHeader=Cookie
+
+        - id: user-service
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/oauth2
+          filters:
+            - RemoveRequestHeader=Cookie
+
+        - id: user-service
+          uri: lb://USER-SERVICE
+          predicates:
             - Path=/user-service/bus/v3/api-docs
           filters:
             - RemoveRequestHeader=Cookie
@@ -237,10 +259,51 @@ spring:
         - id: enroll-service
           uri: lb://ENROLL-SERVICE
           predicates:
-            - Path=/enroll-service/**
+            - Path=/enroll-service/api/v1/tours/**
+            - Method = POST, PUT
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/enroll-service/(?<segment>.*), /$\{segment}
+            - AuthorizationHeaderFilter
+
+        - id: enroll-service
+          uri: lb://ENROLL-SERVICE
+          predicates:
+            - Path=/enroll-service/api/v1/tours/houses/**
+            - Method = GET
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/enroll-service/(?<segment>.*), /$\{segment}
+
+        - id: enroll-service
+          uri: lb://ENROLL-SERVICE
+          predicates:
+            - Path=/enroll-service/api/v1/tours/users/**
+            - Method = GET
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/enroll-service/(?<segment>.*), /$\{segment}
+            - AuthorizationHeaderFilter
+
+        - id: enroll-service
+          uri: lb://ENROLL-SERVICE
+          predicates:
+            - Path=/enroll-service/api/v1/tours/hosts/**
+            - Method = GET
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/enroll-service/(?<segment>.*), /$\{segment}
+            - AuthorizationHeaderFilter
+
+        - id: enroll-service
+          uri: lb://ENROLL-SERVICE
+          predicates:
+            - Path=/enroll-service/api/v1/move-in/**
+            - Method = POST, PUT
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/enroll-service/(?<segment>.*), /$\{segment}
+
 
         - id: web-flux-service
           uri: lb://WEB-FLUX-SERVICE
