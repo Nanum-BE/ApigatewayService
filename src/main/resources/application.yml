@@ -53,7 +53,7 @@ spring:
         - id: user-service
           uri: lb://USER-SERVICE
           predicates:
-            - Path=/user-service/login/oauth2
+            - Path=/user-service/oauth2
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/user-service/(?<segment>.*), /$\{segment}
@@ -61,16 +61,10 @@ spring:
         - id: user-service
           uri: lb://USER-SERVICE
           predicates:
-            - Path=/login/oauth2
+            - Path=/user-service/login/oauth2
           filters:
             - RemoveRequestHeader=Cookie
-
-        - id: user-service
-          uri: lb://USER-SERVICE
-          predicates:
-            - Path=/oauth2
-          filters:
-            - RemoveRequestHeader=Cookie
+            - RewritePath=/user-service/(?<segment>.*), /$\{segment}
 
         - id: user-service
           uri: lb://USER-SERVICE
