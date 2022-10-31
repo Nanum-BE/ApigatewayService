@@ -7,6 +7,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.reactive.CorsConfigurationSource;
 import org.springframework.web.cors.reactive.CorsWebFilter;
@@ -15,6 +17,7 @@ import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 @SpringBootApplication(scanBasePackages = "com.nanum")
 @CrossOrigin
 @Configuration
+@RestController
 public class ApigatewayServiceApplication {
     public static void main(String[] args) {
         SpringApplication.run(ApigatewayServiceApplication.class, args);
@@ -40,6 +43,11 @@ public class ApigatewayServiceApplication {
     @Bean
     public HttpTraceRepository httpTraceRepository() {
         return new InMemoryHttpTraceRepository();
+
+    }
+    @GetMapping("")
+    public String start(){
+        return "hello world";
 
     }
 }

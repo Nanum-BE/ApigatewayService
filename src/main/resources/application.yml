@@ -23,13 +23,14 @@ spring:
       globalcors:
         cors-configurations:
           '[/**]':
-            allowedOrigins: "http://localhost:3000"
+            allowed-origin-patterns: "*"
             allow-credentials: true
             allowedMethods:
               - GET
               - POST
               - PUT
               - DELETE
+              - FETCH
               - OPTIONS
       routes:
         - id: user-service
@@ -140,7 +141,7 @@ spring:
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/board-service/(?<segment>.*), /$\{segment}
-            - AuthorizationHeaderFilter
+#            - AuthorizationHeaderFilter
 
         - id: board-service
           uri: lb://BOARD-SERVICE
